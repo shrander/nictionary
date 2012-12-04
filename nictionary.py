@@ -53,7 +53,7 @@ class chart:
             self.tree[idx].append(state)
             
     def incomplete(self, rule):
-        if self.dot < len(rule.list[1:]) and self.dot != len(self.sentence.list):
+        if self.dot != len(rule.list)-1 and self.dot != len(self.sentence.list):
             return True
         return False
     
@@ -199,11 +199,14 @@ class nictionary:
                 elif chart.incomplete(each) and chart.next_cat(each, i, self.pos):
                     self.scanner(chart,each,i)
                 else:
-                    i+=self.completer(chart,each,i)
+                    self.completer(chart,each,i)
                     #chart.print_tree(i)
-
+            i+=1
     def predictor(self, chart, rule):
+        print 'enter pred'
         for each in self.grammar.rules:   
+            #print each
+            #print rule
             if each.list[0] == rule.list[chart.dot+1] and each not in chart.get_states(chart.dot):
                 each.pos = chart.dot
                 each.dot = chart.dot
@@ -211,9 +214,12 @@ class nictionary:
                 print '%-17s (%d,%d) predictor' % (str(each),each.pos,each.dot)
 
     def scanner(self, chart, rule, i):
+        print 'enter scan'
         temp = chart.get_pos(chart.dot)
         if 'n' == chart.get_pos(chart.dot)[0] or 'v' == chart.get_pos(chart.dot)[0]:
             temp = chart.get_pos(chart.dot)[0]
+        print temp
+        print rule.list[chart.dot+1].strip()
         if rule.list[chart.dot+1].strip() == temp:
             r = grammar_rule(rule.list[chart.dot+1]+' '+chart.get_word(chart.dot),i,chart.dot+1)
             chart.enqueue(r, i+1)
@@ -221,13 +227,17 @@ class nictionary:
             print '%-17s (%d,%d) scanner'% (str(r),r.pos,r.dot)
         
     def completer(self, chart, rule,i):
-        print
+        print 'enter comp'
         for each in chart.get_states(rule.pos):
-            if rule.list[-1] in each.list[1:]:
-                print '%-17s (%d,%d) completer' % (str(each),each.pos,each.dot)
-                each.dot=chart.dot
+            if each.list[0] == 'A':
+                continue
+            #print each
+            #print rule
+            if rule.list[0] in each.list[1:]:
+                each.dot=rule.dot
                 chart.enqueue(each, chart.dot)
-        return 1
+                print '%-17s (%d,%d) completer' % (str(each),each.pos,rule.dot)
+        #return 1
 
     def main(self, args):
         self.parse_args(args)
