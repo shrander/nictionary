@@ -1,0 +1,17 @@
+S NP
+S PP
+
+NP N N
+NP N
+NP PPron NP
+NP PoPron NP
+NP Det NP
+NP Dem-Det NP
+NP Ord NP
+NP Card NP
+NP Quant NP
+NP Adv NP
+NP Adj NP
+NP NP PP
+
+PP prep NP
